@@ -1,0 +1,27 @@
+<view class="custon-detail-navi">
+  <image class="navi-img" src="/images/prev.png" bindtap='navigatorback'></image>
+  <view class="navi-text">快读·资讯</view>
+</view>
+<view class="detail-container" style="height:{{winHeight-91}}px">
+  <view class="news-title">{{title}}</view>
+  <view class="news-wrapper">
+    <view class="news-wrapper-left">
+      <view>{{source}}</view>
+      <view>{{date}}</view>
+    </view>
+    <view class="news-wrapper-right">阅读：{{readCount}}</view>
+  </view>
+  <view class="news-content">
+    <view wx:for="{{content}}" wx:key="{{item}}">
+      <view wx:if="{{item.type==='strong'}}">
+        <view class="news-content-strong">{{item.text}}</view>
+      </view>
+      <view wx:elif="{{item.type==='image'}}">
+        <image class="news-content-img" src="{{item.src}}"></image>
+      </view>
+      <view wx:else>
+        <view class="news-content-p">{{item.text}}</view>
+      </view>
+    </view>
+  </view>
+</view>
