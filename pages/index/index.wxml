@@ -1,43 +1,41 @@
-<view class="top">
-  <view class="custonNavigation">
-    <image class="navi-img" src="/images/news.png"></image>
-    <view class="navi-text">快读·资讯</view>
-  </view>
-  <view class="swiper-tab">
-    <view class="swiper-tab-item  {{currentTab == idx?'active':''}}" wx:for="{{navbar}}" wx:for-index="idx" wx:key="{{idx}}" wx:for-item="itemName" data-current="{{idx}}" bindtap="clickTab">{{itemName}}</view>
-  </view>
+<view class="custonNavigation">
+  <image class="navi-img" src="/images/news.png"></image>
+  <view class="navi-text">快读·资讯</view>
 </view>
-
-<swiper class="swiper-box" current="{{currentTab}}" duration="200" bindchange="swiperTab" style="height:{{winHeight-94}}px">
-  <!--loading区域  -->
-  <view class="loading-view">
-    <image src="/images/load.gif" class="loading-img" wx:if="{{hasMore}}"></image>
-  </view>
+<view class="swiper-tab">
+  <view class="swiper-tab-item  {{currentTab == idx?'active':''}}" wx:for="{{navbar}}" wx:for-index="idx" wx:key="{{idx}}" wx:for-item="itemName" data-current="{{idx}}" bindtap="clickTab">{{itemName}}</view>
+</view>
+<swiper class="swiper-box" current="{{currentTab}}" duration="200" bindchange="swiperTab" style="height:{{scrollHeight-105}}px">
   <!--content区域  -->
-  <swiper-item wx:for="{{tabIndex}}" wx:key="{{item}}">
-    <!--垂直滚动区域，必须设置高度-->
-    <scroll-view scroll-y class="scroll" style="height: {{winHeight-81}}px" bindscrolltoupper="upper">
-      <view class="swiper-item-hot" bindtap='onNewDetailById' data-id="{{hotnew.id}}">
-        <image class="hot-img" src="{{hotnew.firstImage}}"></image>
-        <view class="hot-title">{{hotnew.title}}</view>
-        <view class="hot-source-date">
-          <view class="hot-source">{{hotnew.source}}</view>
-          <view class="hot-date">{{hotnew.date}}</view>
+  <block wx:for="{{navbar}}" wx:key="{{item}}">
+    <swiper-item>
+      <scroll-view scroll-y class="scroll" style="height:{{scrollHeight}}px;" bindscrolltoupper="upper">
+        <!--loading区域  -->
+        <view class="loading-view">
+          <image src="/images/load.gif" class="loading-img" wx:if="{{hasMore}}"></image>
         </view>
-        <view class="hot-tips">热门</view>
-      </view>
-      <view class="swiper-item-list" wx:for="{{news}}" wx:key="{{item.id}}" bindtap='onNewDetailById' data-id="{{item. id}}">
-        <view class="list-left">
-          <view class="list-title">{{item.title}}</view>
-          <view class="list-source-date">
-            <view class="list-source">{{item.source}}</view>
-            <view class="list-date">{{item.date}}</view>
+        <view class="swiper-item-hot" bindtap='onNewDetailById' data-id="{{hotNews.id}}">
+          <image class="hot-img" src="{{hotNews.firstImage}}"></image>
+          <view class="hot-title">{{hotNews.title}}</view>
+          <view class="hot-source-date">
+            <view class="hot-source">{{hotNews.source}}</view>
+            <view class="hot-date">{{hotNews.date}}</view>
+          </view>
+          <view class="hot-tips">热门</view>
+        </view>
+        <view class="swiper-item-list" wx:for="{{news}}" wx:key="{{item.id}}" bindtap='onNewDetailById' data-id="{{item.id}}">
+          <view class="list-left">
+            <view class="list-title">{{item.title}}</view>
+            <view class="list-source-date">
+              <view class="list-source">{{item.source}}</view>
+              <view class="list-date">{{item.date}}</view>
+            </view>
+          </view>
+          <view class="list-right">
+            <image src="{{item.firstImage}}"></image>
           </view>
         </view>
-        <view class="list-right">
-          <image src="{{item.firstImage}}"></image>
-        </view>
-      </view>
-    </scroll-view>
-  </swiper-item>
+      </scroll-view>
+    </swiper-item>
+  </block>
 </swiper>

@@ -4,7 +4,8 @@
     "pages/detail/detail"
   ],
   "window":{
+    "backgroundTextStyle": "dark",
     "navigationStyle": "custom",
-    "enablePullDownRefresh":true
+    "enablePullDownRefresh":false
   }
 }

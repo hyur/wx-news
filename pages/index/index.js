@@ -1,53 +1,28 @@
+let util = require('../../utils/util');
 const newsTypeMap=['gn','gj','cj','yl','js','ty','other'];
 Page({
   data:{
     navbar: ['国内', '国际', '财经', '娱乐', '军事', '体育','其他'],
-    tabIndex:[0,1,2,3,4,5,6],
     currentTab:0,
-    winWidth:0,
-    winHeight:0,
-    hotnew:'',
+    hotNews:'',
     news:'',
     hasMore:true,
-    latest_list: [],
-    latest_last_id: 0
+    scrollHeight:0
   },
   onLoad: function () {
     this.getNews();
     this.getSystemInfo();
   },
-  // 滑到顶部
-  upper: function(e) {
-    wx.showNavigationBarLoading()
-    this.refresh();
-    setTimeout(function () { wx.hideNavigationBarLoading(); wx.stopPullDownRefresh(); }, 2000);
-    this.setData({
-      hasMore:true
-    })
+  // 滚到顶部
+  upper: function () {
     this.getNews();
-  },
-  refresh: function () {
-    wx.showToast({
-      title: '刷新中',
-      icon: 'loading',
-      duration: 2000
-    })
-    },
-  onPullDownRefresh:function(){
-    wx.showLoading({
-      title: '正在加载中',
-    })
-    this.getNews(()=>{
-      wx.stopPullDownRefresh();
-    });
-  },
+  }, 
   // 获取系统信息
   getSystemInfo(){
     wx.getSystemInfo({
       success: (res) => {
         this.setData({
-          winWidth: res.windowWidth,
-          winHeight: res.windowHeight
+          scrollHeight:res.windowHeight
         });
       }
     });
@@ -64,11 +39,13 @@ Page({
     this.setData({
       currentTab:e.detail.current
     })
-    this.getNews();
+    let changeType = e.detail.source;
+    if (changeType=='touch'){
+       this.getNews();
+    }
   },
   // 点击切换
   clickTab:function(e){
-    this.getNews();
     if(this.data.currentTab===e.target.dataset.current){
       return;
     }else{
@@ -76,9 +53,13 @@ Page({
         currentTab:e.target.dataset.current
       })
     }
+    this.getNews();
   },
   // 获取新闻
-  getNews(callback) {
+  getNews() {
+    this.setData({
+      hasMore: true
+    });
     wx.request({
       url: 'https://test-miniprogram.com/api/news/list',
       data: {
@@ -91,12 +72,11 @@ Page({
         let result = res.data.result;
         this.setTimeAndImgUrl(result);
         this.setData({
-          hotnew: result[0],
+          hotNews: result[0],
           news: result.slice(1)
         })
       },
       complete: () => {
-        callback && callback();
         this.setData({hasMore:false})
       }
     })
@@ -104,25 +84,13 @@ Page({
   // 设置时间格式和解决图片路径不全问题
   setTimeAndImgUrl(result){
     result.forEach((item) => {
-      item.date = this.setTime(item.date);
+      item.date = util.formatTime(item.date);
       item.source=item.source===''?'暂无来源':item.source;
-      let first = item.firstImage.split('/')[0];
-      if (first === '') {
-        item.firstImage = "http:" + item.firstImage;
-      }
+      let img = item.firstImage;
+      // 默认图片的url
+      let defaultImgUrl = '';
+      // 判断图片为null或者路径不全
+      item.firstImage = img === null ? defaultImgUrl:(!img.split('/')[0]?'http:'+img:img);
     })
-  },
-  // 格式化时间
-  setTime(date) {
-    let time = new Date(date);
-    let hours = time.getHours();
-    let minus = time.getMinutes();
-    if (hours < 10) {
-      hours = '0' + hours;
-    }
-    if (minus<10){
-      minus = '0' + minus;
-    }
-    return hours + ':' + minus;
   }
 })

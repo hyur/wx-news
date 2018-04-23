@@ -12,16 +12,6 @@
     <view class="news-wrapper-right">阅读：{{readCount}}</view>
   </view>
   <view class="news-content">
-    <view wx:for="{{content}}" wx:key="{{item}}">
-      <view wx:if="{{item.type==='strong'}}">
-        <view class="news-content-strong">{{item.text}}</view>
-      </view>
-      <view wx:elif="{{item.type==='image'}}">
-        <image class="news-content-img" src="{{item.src}}"></image>
-      </view>
-      <view wx:else>
-        <view class="news-content-p">{{item.text}}</view>
-      </view>
-    </view>
+    <rich-text nodes="{{nodes}}" />
   </view>
 </view>
